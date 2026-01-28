@@ -2,10 +2,19 @@ package me.almana.hyvoltz.core.network;
 
 import me.almana.hyvoltz.core.node.ElectricConsumer;
 import me.almana.hyvoltz.core.node.ElectricNode;
+import me.almana.hyvoltz.core.node.ElectricProducer;
 import me.almana.hyvoltz.core.node.ElectricStorage;
 import me.almana.hyvoltz.core.tick.TickListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Container for electric nodes.
@@ -29,11 +38,11 @@ public class ElectricNetwork implements TickListener {
     public void onTick(long tick) {
         // Collect nodes first
         long producerSupply = 0;
-        List<ElectricStorage> storageNodes = new java.util.ArrayList<>();
-        List<ElectricConsumer> consumerNodes = new java.util.ArrayList<>();
+        List<ElectricStorage> storageNodes = new ArrayList<>();
+        List<ElectricConsumer> consumerNodes = new ArrayList<>();
 
         for (ElectricNode node : nodes) {
-            if (node instanceof me.almana.hyvoltz.core.node.ElectricProducer producer) {
+            if (node instanceof ElectricProducer producer) {
                 producerSupply += producer.getOutputPerTick();
             } else if (node instanceof ElectricStorage storage) {
                 storageNodes.add(storage);
@@ -59,7 +68,7 @@ public class ElectricNetwork implements TickListener {
             storageNodes.sort(Comparator
                     .comparingInt(ElectricStorage::getPriority).reversed());
 
-            for (me.almana.hyvoltz.core.node.ElectricStorage storage : storageNodes) {
+            for (ElectricStorage storage : storageNodes) {
                 if (deficit <= 0)
                     break;
 
