@@ -1,8 +1,10 @@
 package me.almana.hyvoltz.hytale.adapter;
 
 import com.hypixel.hytale.server.core.HytaleServer;
-import me.almana.hyvoltz.hytale.HyVoltzEngine;
+
 import java.util.concurrent.TimeUnit;
+
+import me.almana.hyvoltz.api.HyVoltzAPI;
 
 /**
  * Adapter to hook Hytale server ticks.
@@ -16,7 +18,7 @@ public class HytaleTickAdapter {
 
     private void onServerTick() {
         try {
-            HyVoltzEngine.getInstance().onServerTick();
+            HyVoltzAPI.engine().onServerTick();
         } catch (Exception e) {
             // Log error but don't crash scheduler
             e.printStackTrace();

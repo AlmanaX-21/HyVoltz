@@ -1,5 +1,6 @@
-package me.almana.hyvoltz.hytale;
+package me.almana.hyvoltz;
 
+import me.almana.hyvoltz.hytale.WorldEnergyManager;
 import me.almana.hyvoltz.hytale.api.HyVoltzNodeComponent;
 
 import java.util.Map;
@@ -12,17 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * managers.
  */
 public class HyVoltzEngine {
-    private static final HyVoltzEngine INSTANCE = new HyVoltzEngine();
+    private static boolean instantiated = false;
     private final Map<UUID, WorldEnergyManager> worldManagers = new ConcurrentHashMap<>();
 
     private final Map<UUID, Set<HyVoltzNodeComponent>> pendingAttachments = new ConcurrentHashMap<>();
     private final Map<UUID, Set<HyVoltzNodeComponent>> attachedComponents = new ConcurrentHashMap<>();
 
-    private HyVoltzEngine() {
-    }
-
-    public static HyVoltzEngine getInstance() {
-        return INSTANCE;
+    HyVoltzEngine() {
+        if (instantiated) {
+            throw new IllegalStateException("HyVoltzEngine initialized twice!");
+        }
+        instantiated = true;
     }
 
     public void onWorldLoad(UUID worldId) {

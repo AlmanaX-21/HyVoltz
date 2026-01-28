@@ -2,7 +2,8 @@ package me.almana.hyvoltz.hytale.adapter;
 
 import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.universe.world.events.RemoveWorldEvent;
-import me.almana.hyvoltz.hytale.HyVoltzEngine;
+
+import me.almana.hyvoltz.api.HyVoltzAPI;
 
 /**
  * Adapter to hook Hytale world lifecycle events.
@@ -11,10 +12,10 @@ import me.almana.hyvoltz.hytale.HyVoltzEngine;
 public class HytaleWorldAdapter {
 
     public void onWorldLoad(AddWorldEvent event) {
-        HyVoltzEngine.getInstance().onWorldLoad(event.getWorld().getWorldConfig().getUuid());
+        HyVoltzAPI.engine().onWorldLoad(event.getWorld().getWorldConfig().getUuid());
     }
 
     public void onWorldUnload(RemoveWorldEvent event) {
-        HyVoltzEngine.getInstance().onWorldUnload(event.getWorld().getWorldConfig().getUuid());
+        HyVoltzAPI.engine().onWorldUnload(event.getWorld().getWorldConfig().getUuid());
     }
 }

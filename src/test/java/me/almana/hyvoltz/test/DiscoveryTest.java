@@ -2,7 +2,7 @@ package me.almana.hyvoltz.test;
 
 import me.almana.hyvoltz.core.node.ElectricConsumer;
 import me.almana.hyvoltz.core.node.ElectricNode;
-import me.almana.hyvoltz.hytale.HyVoltzEngine;
+import me.almana.hyvoltz.HyVoltzEngine;
 import me.almana.hyvoltz.hytale.WorldEnergyManager;
 import me.almana.hyvoltz.hytale.api.HyVoltzNodeComponent;
 import org.junit.jupiter.api.AfterEach;
@@ -15,9 +15,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DiscoveryTest {
 
+    private HyVoltzEngine engine;
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setup() {
+        TestUtils.resetEngine();
+        engine = TestUtils.createAndRegisterEngine();
+    }
+
     @AfterEach
     public void tearDown() {
-        // Ideally reset engine
+        TestUtils.resetEngine();
     }
 
     private ElectricNode createNode() {
@@ -43,8 +51,8 @@ public class DiscoveryTest {
     @Test
     public void testMergeNetworks() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
-        WorldEnergyManager manager = HyVoltzEngine.getInstance().getManager(worldId);
+        engine.onWorldLoad(worldId);
+        WorldEnergyManager manager = engine.getManager(worldId);
 
         HyVoltzNodeComponent nodeA = new HyVoltzNodeComponent(createNode());
         HyVoltzNodeComponent nodeB = new HyVoltzNodeComponent(createNode());
@@ -64,7 +72,7 @@ public class DiscoveryTest {
     @Test
     public void testSplitNetworks() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         HyVoltzNodeComponent nodeA = new HyVoltzNodeComponent(createNode());
         HyVoltzNodeComponent nodeB = new HyVoltzNodeComponent(createNode());

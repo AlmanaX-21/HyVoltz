@@ -1,0 +1,7 @@
+{
+    "name": "HyVoltz",
+    "id": "hyvoltz",
+    "version": "1.0.0",
+    "main": "me.almana.hyvoltz.HyVoltzPlugin",
+    "description": "Shared electricity platform for Hytale mods."
+}

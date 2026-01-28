@@ -3,7 +3,7 @@ package me.almana.hyvoltz.test;
 import com.hypixel.hytale.protocol.BlockPosition;
 import me.almana.hyvoltz.core.node.ElectricConsumer;
 import me.almana.hyvoltz.core.node.ElectricNode;
-import me.almana.hyvoltz.hytale.HyVoltzEngine;
+import me.almana.hyvoltz.HyVoltzEngine;
 import me.almana.hyvoltz.hytale.WorldEnergyManager;
 import me.almana.hyvoltz.hytale.api.HyVoltzNodeComponent;
 import org.junit.jupiter.api.AfterEach;
@@ -15,18 +15,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RegistrationTest {
 
+    private HyVoltzEngine engine;
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setup() {
+        TestUtils.resetEngine();
+        engine = TestUtils.createAndRegisterEngine();
+    }
+
     @AfterEach
     public void tearDown() {
-        // No easy way to reset singleton, but we can rely on new world IDs for
-        // isolation
+        TestUtils.resetEngine();
     }
 
     @Test
     public void testAttach() {
         UUID worldId = UUID.randomUUID();
         // Simulate world load
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
-        WorldEnergyManager manager = HyVoltzEngine.getInstance().getManager(worldId);
+        engine.onWorldLoad(worldId);
+        WorldEnergyManager manager = engine.getManager(worldId);
 
         ElectricNode node = new ElectricConsumer() {
             private final UUID id = UUID.randomUUID();
@@ -55,8 +62,8 @@ public class RegistrationTest {
     @Test
     public void testDetach() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
-        WorldEnergyManager manager = HyVoltzEngine.getInstance().getManager(worldId);
+        engine.onWorldLoad(worldId);
+        WorldEnergyManager manager = engine.getManager(worldId);
 
         ElectricNode node = new ElectricConsumer() {
             private final UUID id = UUID.randomUUID();
@@ -86,8 +93,8 @@ public class RegistrationTest {
     @Test
     public void testIdempotentAttach() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
-        WorldEnergyManager manager = HyVoltzEngine.getInstance().getManager(worldId);
+        engine.onWorldLoad(worldId);
+        WorldEnergyManager manager = engine.getManager(worldId);
 
         ElectricNode node = new ElectricConsumer() {
             private final UUID id = UUID.randomUUID();
@@ -117,7 +124,7 @@ public class RegistrationTest {
     @Test
     public void testSafeDetachAfterWorldUnload() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         ElectricNode node = new ElectricConsumer() {
             private final UUID id = UUID.randomUUID();
@@ -141,7 +148,7 @@ public class RegistrationTest {
         component.attach(worldId, new BlockPosition(0, 0, 0));
 
         // Unload world
-        HyVoltzEngine.getInstance().onWorldUnload(worldId);
+        engine.onWorldUnload(worldId);
 
         // Detach should be safe
         component.detach();

@@ -2,7 +2,7 @@ package me.almana.hyvoltz.hytale.api;
 
 import com.hypixel.hytale.protocol.BlockPosition;
 import me.almana.hyvoltz.core.node.ElectricNode;
-import me.almana.hyvoltz.hytale.HyVoltzEngine;
+import me.almana.hyvoltz.api.HyVoltzAPI;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -42,7 +42,7 @@ public class HyVoltzNodeComponent {
     public void attach(UUID worldId, BlockPosition pos) {
         this.worldId.set(worldId);
         this.position = pos;
-        HyVoltzEngine.getInstance().requestAttach(this, worldId);
+        HyVoltzAPI.attachNode(this, worldId, pos);
     }
 
     /**
@@ -52,7 +52,7 @@ public class HyVoltzNodeComponent {
     public void detach() {
         UUID currentWorldId = worldId.get();
         if (currentWorldId != null) {
-            HyVoltzEngine.getInstance().cancelAttach(this, currentWorldId);
+            HyVoltzAPI.detachNode(this, currentWorldId);
             worldId.set(null);
         }
     }

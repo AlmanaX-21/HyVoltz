@@ -2,7 +2,7 @@ package me.almana.hyvoltz.test;
 
 import me.almana.hyvoltz.core.node.ElectricConsumer;
 import me.almana.hyvoltz.core.node.ElectricNode;
-import me.almana.hyvoltz.hytale.HyVoltzEngine;
+import me.almana.hyvoltz.HyVoltzEngine;
 import me.almana.hyvoltz.hytale.api.HyVoltzNodeComponent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +13,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DeferredAttachmentTest {
 
+    private HyVoltzEngine engine;
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setup() {
+        TestUtils.resetEngine();
+        engine = TestUtils.createAndRegisterEngine();
+    }
+
     @AfterEach
     public void tearDown() {
-        // ideally reset engine
+        TestUtils.resetEngine();
     }
 
     @Test
@@ -48,7 +56,7 @@ public class DeferredAttachmentTest {
         assertFalse(component.isAttached(), "Component should NOT be actively attached before world load");
 
         // Now load world
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         // Should now be attached
         assertTrue(component.isAttached(), "Component SHOULD be attached after world load");
@@ -57,7 +65,7 @@ public class DeferredAttachmentTest {
     @Test
     public void testUnloadRequeues() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         ElectricNode node = new ElectricConsumer() {
             private final UUID id = UUID.randomUUID();
@@ -82,13 +90,13 @@ public class DeferredAttachmentTest {
         assertTrue(component.isAttached());
 
         // Unload world
-        HyVoltzEngine.getInstance().onWorldUnload(worldId);
+        engine.onWorldUnload(worldId);
 
         // Should be physically detached
         assertFalse(component.isAttached(), "Component should safely detach on world unload");
 
         // Reload world
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         // Should re-attach
         assertTrue(component.isAttached(), "Component should re-attach on reload");
@@ -122,7 +130,7 @@ public class DeferredAttachmentTest {
         component.detach(); // Change mind
 
         // Load world
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         // Should NOT attach
         assertFalse(component.isAttached(), "Component should clearly not attach if explicitly detached while pending");

@@ -4,7 +4,7 @@ import com.hypixel.hytale.math.vector.Vector3i;
 import com.hypixel.hytale.protocol.BlockPosition;
 import me.almana.hyvoltz.core.node.ElectricConsumer;
 import me.almana.hyvoltz.core.node.ElectricNode;
-import me.almana.hyvoltz.hytale.HyVoltzEngine;
+import me.almana.hyvoltz.HyVoltzEngine;
 import me.almana.hyvoltz.hytale.api.HyVoltzNodeComponent;
 import me.almana.hyvoltz.hytale.api.NodeSideConfig;
 import org.junit.jupiter.api.AfterEach;
@@ -17,9 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SideCompatibilityTest {
 
+    private HyVoltzEngine engine;
+
+    @org.junit.jupiter.api.BeforeEach
+    public void setup() {
+        TestUtils.resetEngine();
+        engine = TestUtils.createAndRegisterEngine();
+    }
+
     @AfterEach
     public void tearDown() {
-        // Reset state if possible
+        TestUtils.resetEngine();
     }
 
     private ElectricNode createNode() {
@@ -45,7 +53,7 @@ public class SideCompatibilityTest {
     @Test
     public void testStrictInputOutput() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         // Node A: at (0,0,0). Output ONLY to East (+X).
         // Node B: at (1,0,0). Input ONLY from West (-X).
@@ -95,7 +103,7 @@ public class SideCompatibilityTest {
     @Test
     public void testIncompatibleSidesDoNotConnect() {
         UUID worldId = UUID.randomUUID();
-        HyVoltzEngine.getInstance().onWorldLoad(worldId);
+        engine.onWorldLoad(worldId);
 
         // Node A: (0,0,0) Output EAST
         // Node B: (1,0,0) Input UP (Does NOT accept West)
